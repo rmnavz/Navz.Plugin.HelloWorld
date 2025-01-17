@@ -39,7 +39,7 @@ jobs:
 
     # Publish the project to generate DLLs and related files
     - name: Publish Plugin
-      run: dotnet publish Src/Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj --configuration Release --output ./output
+      run: dotnet publish Src/Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj --configuration Release --output ./Navz.Plugin.HelloWorld
 
     # Extract Version from .csproj using grep
     - name: Extract Plugin Version
