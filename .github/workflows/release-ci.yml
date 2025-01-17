@@ -36,13 +36,13 @@ jobs:
 
     # Publish the project to generate DLLs and related files
     - name: Publish Plugin
-      run: dotnet publish Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj --configuration Release --output ./output
+      run: dotnet publish Src/Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj --configuration Release --output ./output
 
     # Extract PluginVersion from AssemblyMetadata
     - name: Extract Plugin Version
       id: get-version
       run: |
-        PLUGIN_VERSION=$(cat Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj | grep -oP '(?<=PluginVersion", \")[^\"]*')
+        PLUGIN_VERSION=$(cat Src/Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj | grep -oP '(?<=PluginVersion", \")[^\"]*')
         echo "Plugin version: $PLUGIN_VERSION"
         echo "::set-output name=plugin_version::$PLUGIN_VERSION"
 
