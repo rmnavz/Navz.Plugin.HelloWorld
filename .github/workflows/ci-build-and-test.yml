@@ -1,0 +1,34 @@
+name: CI Build and Test
+
+on:
+  workflow_call:
+    inputs:
+      project-path:
+        description: 'Path to the project to build and test'
+        required: true
+        type: string
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up .NET SDK
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      # Step 3: Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Step 4: Run unit tests
+      - name: Run unit tests
+        run: |
+          dotnet build ${{ inputs.project-path }} --configuration Release --no-restore
+          dotnet test --verbosity normal

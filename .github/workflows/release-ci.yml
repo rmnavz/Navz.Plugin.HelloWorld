@@ -1,0 +1,56 @@
+name: Deployment CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types:
+      - merged
+
+jobs:
+  build-and-test:
+    uses: ./.github/workflows/ci-build-and-test.yml
+    with:
+      project-path: Src/Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up .NET
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    # Build the solution for release
+    - name: Build Release
+      run: dotnet build --configuration Release
+
+    # Publish the project to generate DLLs and related files
+    - name: Publish Plugin
+      run: dotnet publish Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj --configuration Release --output ./output
+
+    # Extract PluginVersion from AssemblyMetadata
+    - name: Extract Plugin Version
+      id: get-version
+      run: |
+        PLUGIN_VERSION=$(cat Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj | grep -oP '(?<=PluginVersion", \")[^\"]*')
+        echo "Plugin version: $PLUGIN_VERSION"
+        echo "::set-output name=plugin_version::$PLUGIN_VERSION"
+
+    # Upload release assets
+    - name: Upload Release Assets
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./output
+        asset_name: Navz.Plugin.HelloWorld-${{ steps.get-version.outputs.plugin_version }}.zip
+        asset_content_type: application/zip

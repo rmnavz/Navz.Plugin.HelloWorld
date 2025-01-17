@@ -1,0 +1,17 @@
+name: Unit Test Pipeline
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+    types:
+      - merged
+
+jobs:
+  build-and-test:
+    uses: ./.github/workflows/ci-build-and-test.yml
+    with:
+      project-path: Src/Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj
