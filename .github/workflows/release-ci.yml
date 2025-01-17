@@ -60,7 +60,7 @@ jobs:
     - name: Upload Release Assets
       uses: actions/upload-release-asset@v1
       with:
-        upload_url: ${{ github.event.release.upload_url }}
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
         asset_path: ./output.zip
         asset_name: Navz.Plugin.HelloWorld-${{ steps.extract-version.outputs.plugin_version }}.zip
         asset_content_type: application/zip
