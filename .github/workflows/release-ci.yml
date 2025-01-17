@@ -67,7 +67,7 @@ jobs:
     # Create ZIP of the output folder
     - name: Create ZIP of Output
       run: |
-        zip -r ./output.zip ./output/*
+        zip -r ./output.zip ./Navz.Plugin.HelloWorld/*
         echo "Created output.zip"
 
     # Upload release assets
