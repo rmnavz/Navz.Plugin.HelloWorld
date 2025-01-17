@@ -49,6 +49,17 @@ jobs:
 
         # Set the extracted PluginVersion as output
         echo "::set-output name=plugin_version::$PLUGIN_VERSION"
+
+    # Create a GitHub release
+    - name: Create GitHub Release
+      id: create-release
+      uses: actions/create-release@v1
+      with:
+        tag_name: v${{ steps.extract-version.outputs.plugin_version }}
+        release_name: Release v${{ steps.extract-version.outputs.plugin_version }}
+        body: "Release of plugin version ${{ steps.extract-version.outputs.plugin_version }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     # Create ZIP of the output folder
     - name: Create ZIP of Output
