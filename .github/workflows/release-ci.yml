@@ -11,11 +11,8 @@ on:
       - merged
 
 permissions:
-  contents: write    # Grants write access to the contents (for creating releases, pushing code)
-  # issues: write      # Allows writing issues
-  # pull-requests: write # Allows managing pull requests
-  # actions: write     # Allows managing actions and workflows
-  releases: write    # Allows creating and managing releases
+  contents: write    # Grants write access to the repository contents (like creating releases, pushing code)
+  releases: write    # Grants permission to create and manage releases
 
 jobs:
   build-and-test:
