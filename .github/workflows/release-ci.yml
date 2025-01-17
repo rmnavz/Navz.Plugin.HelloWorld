@@ -38,15 +38,15 @@ jobs:
     - name: Publish Plugin
       run: dotnet publish Src/Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj --configuration Release --output ./output
 
-    # Extract Version from .csproj for the release
+    # Extract Version from .csproj using grep
     - name: Extract Plugin Version
       id: extract-version
       run: |
-        # Extract Version from .csproj using MSBuild
-        PLUGIN_VERSION=$(dotnet msbuild Src/Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj /p:Configuration=Release /p:Version)
-        
+        # Use grep to extract the version from the .csproj file
+        PLUGIN_VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" Src/Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj)
+
         echo "Plugin version: $PLUGIN_VERSION"
-        
+
         # Set the extracted PluginVersion as output
         echo "::set-output name=plugin_version::$PLUGIN_VERSION"
     
