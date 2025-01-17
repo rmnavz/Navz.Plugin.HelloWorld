@@ -38,29 +38,29 @@ jobs:
     - name: Publish Plugin
       run: dotnet publish Src/Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj --configuration Release --output ./output
 
-    # Extract PluginVersion from AssemblyMetadata
+    # Extract Version from .csproj for the release
     - name: Extract Plugin Version
-      id: get-version
+      id: extract-version
       run: |
-        PLUGIN_VERSION=$(dotnet exec <<EOF
-        using System;
-        using System.Reflection;
-        using Navz.Plugin.HelloWorld;
+        # Extract Version from .csproj using MSBuild
+        PLUGIN_VERSION=$(dotnet msbuild Src/Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj /p:Configuration=Release /p:Version)
         
-        var version = typeof(HelloWorldPlugin).Assembly
-                      .GetCustomAttribute<AssemblyMetadataAttribute>()
-                      ?.Metadata["PluginVersion"];
-        Console.WriteLine(version ?? "0.0.0");
-        EOF
-        )
         echo "Plugin version: $PLUGIN_VERSION"
+        
+        # Set the extracted PluginVersion as output
         echo "::set-output name=plugin_version::$PLUGIN_VERSION"
+    
+    # Create ZIP of the output folder
+    - name: Create ZIP of Output
+      run: |
+        zip -r ./output.zip ./output/*
+        echo "Created output.zip"
 
     # Upload release assets
     - name: Upload Release Assets
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./output
-        asset_name: Navz.Plugin.HelloWorld-${{ steps.get-version.outputs.plugin_version }}.zip
+        asset_path: ./output.zip
+        asset_name: Navz.Plugin.HelloWorld-${{ steps.extract-version.outputs.plugin_version }}.zip
         asset_content_type: application/zip

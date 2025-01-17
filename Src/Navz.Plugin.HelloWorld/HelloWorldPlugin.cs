@@ -1,8 +1,6 @@
 ﻿using System.Reflection;
 using Navz.Plugin.Core.Plugins;
 
-[assembly: AssemblyMetadata("PluginVersion", "0.1.0")]
-[assembly: AssemblyMetadata("MinLoaderVersion", "0.3.0")]
 namespace Navz.Plugin.HelloWorld;
 
 public class HelloWorldPlugin : CommandPlugin
