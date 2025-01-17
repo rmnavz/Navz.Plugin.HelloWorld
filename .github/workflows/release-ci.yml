@@ -42,7 +42,17 @@ jobs:
     - name: Extract Plugin Version
       id: get-version
       run: |
-        PLUGIN_VERSION=$(cat Src/Navz.Plugin.HelloWorld/Navz.Plugin.HelloWorld.csproj | grep -oP '(?<=PluginVersion", \")[^\"]*')
+        PLUGIN_VERSION=$(dotnet exec <<EOF
+        using System;
+        using System.Reflection;
+        using Navz.Plugin.HelloWorld;
+        
+        var version = typeof(HelloWorldPlugin).Assembly
+                      .GetCustomAttribute<AssemblyMetadataAttribute>()
+                      ?.Metadata["PluginVersion"];
+        Console.WriteLine(version ?? "0.0.0");
+        EOF
+        )
         echo "Plugin version: $PLUGIN_VERSION"
         echo "::set-output name=plugin_version::$PLUGIN_VERSION"
 
